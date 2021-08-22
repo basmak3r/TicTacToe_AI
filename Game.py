@@ -1,4 +1,5 @@
 import time
+global game
 game=True
 x="X"
 X=False
@@ -12,6 +13,23 @@ a=[[]]
 
 print("")
 print("")
+
+
+def winner(a,k):
+    if evaluate(a)==10 and k==0:
+        print("Human Wins")
+        return False
+    elif evaluate(a)==10 and k==1:
+        print("Computer Wins")
+        return False
+    return True
+
+def Left(a):
+    for i in range(3):
+        for j in range(3):
+            if(a[i][j]==-1):
+                return True
+    return False
 
 def evaluate(a):
     for i in range(3):
@@ -37,10 +55,14 @@ def evaluate(a):
 
 def minimax(a,depth,isMax):
     score=evaluate(a)
-    if score==10 or score==-10:
+    if score==10 :
         return score
-    # if(Left(a)==False):
-    #     return 0
+    if score==-10:
+        return score
+
+    if(Left(a)==False):
+        return 0
+
     if(isMax):
         best=-1000
         for i in range(3):
@@ -56,11 +78,8 @@ def minimax(a,depth,isMax):
             for j in range(3):
                 if(a[i][j]==-1):
                     a[i][j]=not X
-                    # time.sleep(2)
-                    # print(a)
                     best=min(best,minimax(a,depth+1,not isMax))
                     a[i][j]=-1
-        print(best)
         return best
         
     
@@ -74,13 +93,10 @@ def bestmove(a):
             if(a[i][j]==-1):
                 a[i][j]=X
                 moveval=minimax(a,0,False)
-                print(a)
-                a[i][j]=-1
-                time.sleep(2)
-                print(moveval)
                 if(bestval<moveval):
                     move=(i,j)
                     bestval=moveval
+                a[i][j]=-1
     return move
         
 for i in range(3):
@@ -114,11 +130,12 @@ def print_array():
         if(i!=2):
             print("\n------------------------")
 
+    print("")
+    print("")
+
 
 print("Position values are 1 -9")
 while(game):
-
-
     print("")
     n=int(input("Enter Your Postion:"))
     if(n==0):
@@ -130,18 +147,32 @@ while(game):
         a[1][n%3]=X
     elif(n<9):
         a[2][n%3]=X
-    
+    game=winner(a,0)
     X=(not X)
+    
 
     
     print_array()
     print("")
-    print(bestmove(a))
-    game=False
-    print(a)
+    if(Left(a)==False):
+        print("Draw")
+        break
+    pc_move=bestmove(a)
+    a[pc_move[0]][pc_move[1]]=X
+    print("")
+    print("PC is Thinking ....")
+    time.sleep(3)
+    print("")
+    print("")
+    print("~~~~~~~~~PC MOVE~~~~~~~~~~~")
+    print_array()
+
+    game=winner(a,1)
+    X=not X
 
 
 
-print("Fun-----------")
+    # print(a)
+
 
 
